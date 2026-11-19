@@ -1,0 +1,16 @@
+plugins { id 'com.android.application' }
+def keystoreProps = new Properties()
+def keystoreFile = rootProject.file('keystore.properties')
+if (keystoreFile.exists()) keystoreFile.withInputStream { keystoreProps.load(it) }
+android {
+    namespace 'ing.tbor.timers'
+    compileSdk 35
+    buildToolsVersion '35.0.0'
+    defaultConfig { applicationId 'ing.tbor.timers'; minSdk 33; targetSdk 35; versionCode 11; versionName '0.8.0' }
+    signingConfigs { release { if (keystoreFile.exists()) {
+        storeFile file(keystoreProps['storeFile']); storePassword keystoreProps['storePassword']
+        keyAlias keystoreProps['keyAlias']; keyPassword keystoreProps['keyPassword'] } } }
+    buildTypes { release { minifyEnabled false
+        signingConfig keystoreFile.exists() ? signingConfigs.release : signingConfigs.debug } }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
